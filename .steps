@@ -1,1 +1,10 @@
 #
+python3 -m venv .nsgates
+source .nsgates/bin/activate  
+venv\Scripts\activate 
+
+pip install django django-tenants django-simple-history psycopg2-binary
+
+
+django-admin startproject core .
+python manage.py startapp accounts

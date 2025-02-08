@@ -2,9 +2,10 @@ import uuid
 from django.db import models
 from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
+from simple_history.admin import SimpleHistoryAdmin
 
 class ActiveManager(models.Manager):
-    """Manager personalizado para buscar apenas registros ativos (não deletados)"""
+    """Manager que retorna apenas registros ativos (não deletados)"""
     def get_queryset(self):
         return super().get_queryset().filter(deleted_at__isnull=True)
 
@@ -15,10 +16,10 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     
-    objects = ActiveManager()  # Gerenciador padrão retorna apenas registros ativos
-    all_objects = models.Manager()  # Gerenciador alternativo retorna todos os registros
+    objects = ActiveManager()  # Usa este como padrão
+    all_objects = models.Manager()  # Para buscar tudo (inclusive deletados)
 
-    history = HistoricalRecords(inherit=False)  # 🔥 Corrigido para suportar herança corretamente
+    history = HistoricalRecords(inherit=False)  
 
     class Meta:
         indexes = [
@@ -40,3 +41,15 @@ class BaseModel(models.Model):
     def is_deleted(self):
         """Retorna True se o registro estiver marcado como excluído"""
         return self.deleted_at is not None
+    
+class BaseAdmin(SimpleHistoryAdmin):
+    """
+    Classe base para administração de modelos com Soft Delete.
+    Filtra automaticamente registros onde `deleted_at` é NULL.
+    """
+    
+    readonly_fields = ('last_login', 'date_joined', 'deleted_at')  # Torna esses campos não editáveis
+    
+    def get_queryset(self, request):
+        """Filtra apenas registros que não foram excluídos (soft delete)"""
+        return super().get_queryset(request).filter(deleted_at__isnull=True)

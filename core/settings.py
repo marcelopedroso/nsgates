@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u%4c!w*^)5_@w*0vafgzish27retbjh(9&(e!tn*t6mz1ny1v+'
+SECRET_KEY = 'django-insecure-q^g)g25pm^#@e5*u5_!^*#29^cop((kt_0+sd!rrb+mvch2z%3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,8 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "accounts",  # App de usuários (CustomUser)
-    "accounts_permissions",  # App de Groups e Permissions
+    "accounts",  # App de usuários customizados
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -41,6 +40,11 @@ INSTALLED_APPS = [
     "django.contrib.admin",
 ]
 
+AUTH_USER_MODEL = "accounts.CustomUser"  
+
+#AUTHENTICATION_BACKENDS = [
+#    "accounts.models.ActiveUserBackend", 
+#]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -129,8 +133,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = "accounts.CustomUser"
-
-AUTH_GROUP_MODEL = "accounts_permissions.CustomGroup"
-AUTH_PERMISSION_MODEL = "accounts_permissions.CustomPermission"

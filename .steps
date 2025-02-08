@@ -7,4 +7,10 @@ pip install django django-tenants django-simple-history psycopg2-binary
 
 
 django-admin startproject core .
-python manage.py startapp accounts
+python3 manage.py startapp accounts
+python3 manage.py startapp accounts_permissions
+
+rm -rf accounts/migrations/*
+rm -rf accounts_permissions/migrations/*
+python manage.py makemigrations accounts accounts_permissions
+python manage.py migrate

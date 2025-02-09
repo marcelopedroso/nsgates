@@ -34,7 +34,7 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
     search_fields = ["username", "email", "first_name", "last_name"]
     ordering = ["username"]
 
-    readonly_fields = ["last_login", "date_joined"]
+    readonly_fields = ["last_login", "date_joined","password"]
     form = CustomUserAdminForm  # 🔥 Usa o formulário customizado
 
     def get_queryset(self, request):

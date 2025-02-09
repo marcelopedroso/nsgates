@@ -3,7 +3,9 @@ from unfold.admin import ModelAdmin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from simple_history.admin import SimpleHistoryAdmin
+from django.contrib import messages
 from .models import CustomUser
+from .forms import CustomUserAdminForm
 
 
 class BaseAdmin(ModelAdmin, SimpleHistoryAdmin):
@@ -31,11 +33,24 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
     list_filter = ["is_staff", "is_superuser", "is_active"]
     search_fields = ["username", "email", "first_name", "last_name"]
     ordering = ["username"]
-    
+
     readonly_fields = ["last_login", "date_joined"]
+    form = CustomUserAdminForm  # 🔥 Usa o formulário customizado
 
     def get_queryset(self, request):
         """Exibe apenas usuários que não foram deletados (soft delete)."""
         return super().get_queryset(request).filter(deleted_at__isnull=True)
+
+    def save_model(self, request, obj, form, change):
+        """Se o usuário já existir e estiver deletado, restaura em vez de criar um novo"""
+        existing_user = CustomUser.all_objects.filter(username=obj.username).first()
+
+        if existing_user and existing_user.deleted_at is not None:  # 🔥 Corrigido para verificar corretamente
+            existing_user.deleted_at = None  # 🔥 Restaura o usuário
+            existing_user.save(update_fields=["deleted_at"])
+            messages.success(request, f'O usuário "{obj.username}" foi restaurado com sucesso!')
+            return  # Evita criar um novo usuário
+
+        super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
 admin.site.register(CustomUser, CustomUserAdmin)

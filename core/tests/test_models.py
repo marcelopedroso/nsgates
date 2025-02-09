@@ -17,8 +17,9 @@ def test_soft_delete_user():
     user.delete()
 
     assert user.deleted_at is not None  # Deve ter um timestamp de deleção
-    assert CustomUser.objects.filter(username="testuser").exists() is False  # Não aparece na query padrão
-    assert CustomUser.all_objects.filter(username="testuser").exists() is True  # Está no all_objects
+    assert CustomUser.objects.filter(username="testuser").exists() is False  # ✅ Agora passa
+    assert CustomUser.all_objects.filter(username="testuser").exists() is True  # ✅ Ainda está no banco
+
 
 @pytest.mark.django_db
 def test_restore_user():

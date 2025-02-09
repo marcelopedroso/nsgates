@@ -41,6 +41,7 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = "core.CustomUser"
 
 INSTALLED_APPS = [
+    "unfold",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

@@ -8,8 +8,11 @@ from .models import CustomUser
 
 class BaseAdmin(ModelAdmin, SimpleHistoryAdmin):
     """Admin base com suporte ao Unfold e SimpleHistory"""
-    list_per_page = 20  # Exibir 20 registros por página
+    list_per_page = 20
     list_per_page_options = [10, 20, 50, 100]
+
+    readonly_fields = ["created_at", "updated_at", "deleted_at"]  
+
     
     def get_search_fields(self, request):
         """Filtra automaticamente apenas os campos de texto do modelo"""
@@ -28,6 +31,8 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
     list_filter = ["is_staff", "is_superuser", "is_active"]
     search_fields = ["username", "email", "first_name", "last_name"]
     ordering = ["username"]
+    
+    readonly_fields = ["last_login", "date_joined"]
 
     def get_queryset(self, request):
         """Exibe apenas usuários que não foram deletados (soft delete)."""

@@ -13,10 +13,15 @@ import os
 import environ
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, "locale"),  # 🔥 Define o caminho global para traduções
+]
 
 # Inicializa o django-environ
 env = environ.Env()
@@ -52,6 +57,7 @@ INSTALLED_APPS = [
     "core",  # Seu app principal
 ]
 MIDDLEWARE = [
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -120,13 +126,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ("en", _("English")),
+    ("pt-br", _("Português (Brasil)")),
+    ("es", _("Español")),
+]
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "pt-br"  # 🔥 Definir o idioma padrão
+USE_I18N = True  # Habilita a internacionalização
+USE_L10N = True  # Usa formatação local
+USE_TZ = True  # Mantém suporte a Timezone
 
-USE_I18N = True
+TIME_ZONE = env("TIME_ZONE", default="UTC")  # Carrega do .env, padrão UTC
 
-USE_TZ = True
+
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -138,3 +152,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+UNFOLD = {
+    "SITE_TITLE": "NsLGates Manager",  # Nome do admin
+    "SITE_HEADER": "NsGates",  # Cabeçalho
+    "SITE_URL": "/",  # URL inicial ao clicar no título
+    "SHOW_LANGUAGE_SWITCHER": True,  # 🔥 Adiciona um botão para trocar idioma
+}

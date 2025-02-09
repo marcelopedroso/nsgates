@@ -4,6 +4,7 @@ source .nsgates/bin/activate
 venv\Scripts\activate 
 
 pip install django django-tenants django-simple-history psycopg2-binary
+pip install django psycopg2-binary django-simple-history
 
 
 django-admin startproject core .
@@ -18,3 +19,30 @@ python manage.py migrate
 python manage.py createsuperuser
 
 python manage.py runserver
+
+
+git tag -a VERSAO_DA_TAG -m "NOME DA TAG"
+git push origin VERSAO_DA_TAG
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "nsgates_db",
+        "USER": "nstech",
+        "PASSWORD": "ns12345",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
+
+#SOS
+deactivate  
+rm -rf .nsgates
+python3 -m venv .nsgates
+source .nsgates/bin/activate 
+pip install --upgrade pip
+pip install django psycopg2-binary django-simple-history
+
+

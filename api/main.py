@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from django.contrib.auth import authenticate
 from api.security import create_access_token, create_refresh_token, get_current_user
@@ -7,6 +8,9 @@ from django.conf import settings
 from core.models import CustomUser, TokenIntegration
 import datetime
 from django.utils.timezone import now
+import os
+
+REPORT_PATH = os.path.abspath("reports/test_report.html")
 
 
 app = FastAPI(title="NSGates API", version="1.0.0")
@@ -78,8 +82,20 @@ def refresh_token(user: dict = Depends(get_current_user)):
 def logout(user: dict = Depends(get_current_user)):
     """Remove o token de autenticação do usuário"""
     user_obj = CustomUser.objects.get(username=user["sub"])
-    
-    # Deletar o token do banco
-    TokenIntegration.objects.filter(user=user_obj).delete()
 
-    return {"message": "Logout realizado com sucesso"}
+    # 🔥 Deletar o token do banco
+    deleted, _ = TokenIntegration.objects.filter(user=user_obj).delete()
+
+    if deleted:
+        return {"message": "Logout realizado com sucesso"}
+    
+    raise HTTPException(status_code=400, detail="Erro ao deslogar usuário")
+
+
+# 🔥 Nova rota para exibir o relatório de testes
+@app.get("/test_report")
+def get_test_report():
+    """Retorna o relatório de testes HTML se existir."""
+    if os.path.exists(REPORT_PATH):
+        return FileResponse(REPORT_PATH, media_type="text/html")
+    return {"error": "Relatório de testes não encontrado. Execute `python runtests.py` primeiro."}

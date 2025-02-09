@@ -110,7 +110,10 @@ DATABASES = {
         "USER": env("DATABASE_USER"),
         "PASSWORD": env("DATABASE_PASSWORD"),
         "HOST": env("DATABASE_HOST"),
-        "PORT": env.int("DATABASE_PORT", default=5432)
+        "PORT": env.int("DATABASE_PORT", default=5432),
+        "TEST" : {
+            "NAME" : "test_nsgates_db"
+        }
     }
 }
 

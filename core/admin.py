@@ -25,6 +25,23 @@ class BaseAdmin(ModelAdmin, SimpleHistoryAdmin):
                 if isinstance(field, (models.CharField, models.TextField))
             ]
         return super().get_search_fields(request)
+    
+    def get_queryset(self, request):
+        """Exibe apenas usuários que não foram deletados (soft delete)."""
+        return super().get_queryset(request).filter(deleted_at__isnull=True)
+
+    def delete_model(self, request, obj):
+        """Intercepta a deleção para aplicar Soft Delete."""
+        if obj.deleted_at is None:
+            obj.delete()  # ✅ Marca como deletado
+            messages.success(request, f'O registro "{obj}" foi marcado como excluído!')
+        else:
+            obj.restore()  # ✅ Restaura se já estava deletado
+            messages.success(request, f'O registro "{obj}" foi restaurado!')
+
+    def has_delete_permission(self, request, obj=None):
+        """Habilita a deleção apenas para Soft Delete."""
+        return True  # ✅ Mantém a opção de exclusão ativa para Soft Delete
 
 
 class CustomUserAdmin(UserAdmin, BaseAdmin):  
@@ -37,9 +54,6 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
     readonly_fields = ["last_login", "date_joined","password"]
     form = CustomUserAdminForm  # 🔥 Usa o formulário customizado
 
-    def get_queryset(self, request):
-        """Exibe apenas usuários que não foram deletados (soft delete)."""
-        return super().get_queryset(request).filter(deleted_at__isnull=True)
 
     def save_model(self, request, obj, form, change):
         """Se o usuário já existir e estiver deletado, restaura em vez de criar um novo"""

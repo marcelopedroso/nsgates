@@ -59,3 +59,19 @@ class CustomUser(AbstractUser, BaseModel):
         if 'change_reason' in kwargs:
             update_change_reason(self, kwargs.pop('change_reason'))
         super().save(*args, **kwargs)
+
+
+class TokenIntegration(BaseModel):
+    """Armazena os tokens JWT dos usuários autenticados"""
+    
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="token")
+    access_token = models.TextField()
+    refresh_token = models.TextField()
+    expires_at = models.DateTimeField()  # Data de expiração do access token
+
+    def is_expired(self):
+        """Verifica se o token de acesso já expirou"""
+        return self.expires_at < now()
+    
+    def __str__(self):
+        return f"Token de {self.user.username}"

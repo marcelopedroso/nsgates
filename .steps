@@ -1,3 +1,7 @@
+
+FastAPI  http://127.0.0.1:8000/
+Django http://127.0.0.1:8000/django/admin/
+
 #
 python3 -m venv .nsgates
 source .nsgates/bin/activate  

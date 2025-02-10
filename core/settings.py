@@ -187,6 +187,10 @@ JAZZMIN_SETTINGS = {
     "site_header": "NsGates",  # Nome na barra superior
     "site_brand": "Gates",  # Nome no menu lateral
     "welcome_sign": "Bem-vindo ao painel NsGates",  # Mensagem da tela de login
+    "site_icon" : "images/favicon.png",
+    "login_logo": "images/logo_login.png",  # 🔹 Logo na tela de login
+    "site_logo_classes": "img-fluid p-2",
+    #"site_icon": "images/favicon.ico",  # 🔹 Ícone do navegador (favicon)
     "site_logo": "/images/logo.png",  # Arquivo dentro de static/
     "site_logo_classes": "",  # Formato da logo (opcional) img-circle
     #"theme": "flatly",

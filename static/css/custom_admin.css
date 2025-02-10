@@ -6,6 +6,17 @@ cinza   #C5CAD2
 azul    #000032
 */
 
+/* 🔥 Corrige a cor do nome do usuário na barra lateral */
+#jazzy-sidebar .user-panel .info a {
+    color: #ffffff !important;  /* Cor branca */
+    font-weight: bold !important;
+    text-transform: uppercase;  /* Negrito para melhor contraste */
+}
+
+#jazzy-sidebar .user-panel .info a:hover {
+    color: #f8f9fa !important;  /* Tom mais claro ao passar o mouse */
+}
+
 
 /* ==========================
    🎨 PERSONALIZAÇÃO DO DJANGO ADMIN (JAZZMIN)

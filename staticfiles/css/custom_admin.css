@@ -1,0 +1,189 @@
+/* ==========================
+   🎨 PERSONALIZAÇÃO DO DJANGO ADMIN (JAZZMIN)
+   ========================== */
+
+/* 📌 Sidebar (Menu Lateral) */
+.sidebar {
+    background-color: #ff3d03 !important; /* Cor de fundo da sidebar */
+}
+
+.sidebar .nav-item.active {
+    background-color: #c5cad2 !important; /* Cor do item ativo */
+}
+
+.sidebar .nav-item a {
+    color: #ffffff !important; /* Cor dos links da sidebar */
+}
+
+.sidebar .nav-item a:hover {
+    color: #ffebcd !important; /* Cor ao passar o mouse */
+}
+
+/* 📌 Navbar (Topo) */
+.navbar {
+    background-color: #c5cad2 !important; /* Cor de fundo do topo */
+}
+
+.navbar .navbar-brand {
+    color: #000000 !important; /* Cor do nome/logo no topo */
+}
+
+.navbar .navbar-brand:hover {
+    color: #ff3d03 !important; /* Cor do nome ao passar o mouse */
+}
+
+/* 📌 Itens do Menu (Sidebar) */
+.sidebar .nav-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Linha separadora entre itens */
+}
+
+/* 📌 Texto no Menu */
+.sidebar .nav-item a {
+    font-weight: bold !important; /* Deixa o texto mais forte */
+    text-transform: uppercase; /* Deixa o texto em maiúsculas */
+}
+
+/* 📌 Página do Django Admin (Cor de Fundo) */
+body {
+    background-color: #e0e0e0 !important; /* Cor de fundo geral */
+}
+
+/* 📌 Botões do Django Admin */
+.btn-primary {
+    background-color: #ff3d03 !important; /* Cor dos botões principais */
+    border-color: #ff3d03 !important;
+}
+
+.btn-primary:hover {
+    background-color: #d12c02 !important; /* Cor ao passar o mouse */
+}
+
+/* 📌 Links (Geral) */
+a {
+    color: #ff3d03 !important; /* Cor padrão dos links */
+}
+
+a:hover {
+    color: #C5CAD2 !important; /* Cor dos links ao passar o mouse */
+}
+
+/* 📌 Rodapé */
+.main-footer {
+    background-color: #C5CAD2 !important; /* Cor do rodapé */
+    color: #ff3d03 !important; /* Cor do texto do rodapé */
+    text-align: center;
+}
+
+/* 🎨 Botões no Django Admin */
+
+/* 📌 Botão Primário (Azul padrão do Django) */
+.btn-primary {
+    background-color: #ff3d03 !important; /* Cor de fundo */
+    border-color: #ff3d03 !important;
+    color: white !important; /* Cor do texto */
+}
+
+.btn-primary:hover {
+    background-color: #d12c02 !important; /* Cor ao passar o mouse */
+    border-color: #d12c02 !important;
+}
+
+/* 📌 Botão Secundário (Cinza padrão) */
+.btn-secondary {
+    background-color: #423449 !important;
+    border-color: #423449 !important;
+    color: white !important;
+}
+
+.btn-secondary:hover {
+    background-color: #2a1d2e !important;
+    border-color: #2a1d2e !important;
+}
+
+/* 📌 Botão de Sucesso (Verde padrão) */
+.btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #218838 !important;
+    border-color: #218838 !important;
+}
+
+/* 📌 Botão de Perigo (Vermelho padrão) */
+.btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+}
+
+/* 📌 Botão de Aviso (Amarelo padrão) */
+.btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: black !important;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800 !important;
+    border-color: #e0a800 !important;
+}
+
+/* 📌 Botão de Informação (Azul Claro padrão) */
+.btn-info {
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.btn-info:hover {
+    background-color: #138496 !important;
+    border-color: #138496 !important;
+}
+
+/* 📌 Botão de Link */
+.btn-link {
+    color: #ff3d03 !important;
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    color: #d12c02 !important;
+    text-decoration: underline;
+}
+
+
+
+/* ==========================
+   🎨 Personalização do Site Brand (Nome no Sidebar)
+   ========================== */
+
+/* 📌 Aumenta o tamanho da fonte do "site_brand" */
+.brand-link .brand-text {
+    font-size: 26px !important; /* Ajuste o tamanho conforme necessário */
+    /*
+    font-weight: bold !important; /* Negrito para destaque 
+    color: white !important; /* Cor do texto 
+    */
+}
+
+/* 📌 Ajusta o espaçamento ao redor do título */
+.brand-link {
+    padding: 15px !important;
+}
+
+
+/* 🎨 Personalização do Rodapé */
+.main-footer {
+    background-color: #ff3d03 !important; /* Cor de fundo */
+    color: white !important; /* Cor do texto */
+    text-align: center; /* Centraliza o texto */
+    font-weight: bold; /* Deixa o texto em negrito */
+}

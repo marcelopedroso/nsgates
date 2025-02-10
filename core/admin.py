@@ -1,5 +1,4 @@
 from django.db import models
-from unfold.admin import ModelAdmin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from simple_history.admin import SimpleHistoryAdmin
@@ -8,7 +7,7 @@ from .models import CustomUser
 from .forms import CustomUserAdminForm
 
 
-class BaseAdmin(ModelAdmin, SimpleHistoryAdmin):
+class BaseAdmin (SimpleHistoryAdmin):
     """Admin base com suporte ao Unfold e SimpleHistory"""
     list_per_page = 20
     list_per_page_options = [10, 20, 50, 100]

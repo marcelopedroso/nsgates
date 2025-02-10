@@ -41,6 +41,12 @@ JWT_EXPIRATION = 3600  # Tempo de expiração do token (15 minutos)
 JWT_REFRESH_EXPIRATION = 86400  # Tempo de expiração do refresh token (24h)
 
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # Aqui ficam os arquivos estáticos personalizados (logo, CSS, JS, etc.)
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -54,7 +60,8 @@ AUTH_USER_MODEL = "core.CustomUser"
 
 
 INSTALLED_APPS = [
-    "unfold",
+    #"unfold",
+    'jazzmin',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -65,6 +72,7 @@ INSTALLED_APPS = [
     "simple_history",
     "core",  # Seu app principal
 ]
+
 MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -166,9 +174,36 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-UNFOLD = {
-    "SITE_TITLE": "NsLGates Manager",  # Nome do admin
-    "SITE_HEADER": "NsGates",  # Cabeçalho
-    "SITE_URL": "/",  # URL inicial ao clicar no título
-    "SHOW_LANGUAGE_SWITCHER": True,  # 🔥 Adiciona um botão para trocar idioma
+#UNFOLD = {
+#    "SITE_TITLE": "NsLGates Manager",  # Nome do admin
+#    "SITE_HEADER": "NsGates",  # Cabeçalho
+#    "SITE_URL": "/",  # URL inicial ao clicar no título
+#    "SHOW_LANGUAGE_SWITCHER": True,  # 🔥 Adiciona um botão para trocar idioma
+#}
+
+JAZZMIN_SETTINGS = {
+    #"show_ui_builder": True,  # Ativa o botão de customização no painel
+    "site_title": "NsGates Admin",  # Nome na aba do navegador
+    "site_header": "NsGates",  # Nome na barra superior
+    "site_brand": "Gates",  # Nome no menu lateral
+    "welcome_sign": "Bem-vindo ao painel NsGates",  # Mensagem da tela de login
+    "site_logo": "/images/logo.png",  # Arquivo dentro de static/
+    "site_logo_classes": "",  # Formato da logo (opcional) img-circle
+    #"theme": "flatly",
+    #"custom_css" : "css/custom_admin.css"
+    "site_footer" : "NsGate 1.0.0",
+    
+}
+
+JAZZMIN_SETTINGS["custom_css"] = "css/custom_admin.css"
+
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar": "navbar-dark bg-primary",  # Cor da barra superior
+    "sidebar": "sidebar-dark-primary",  # Cor do menu lateral
+    "sidebar_nav_active": "primary",  # Cor do item ativo no menu
+    "body_small_text": False,  # Texto pequeno ou normal
+    "footer_fixed": False,  # Se o rodapé fica fixo
+    "navbar_fixed": True,  # Se a navbar fica fixa no topo
+    "sidebar_fixed": True,  # Se a sidebar fica fixa na lateral
 }

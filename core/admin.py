@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from django.contrib import messages
-from .models import CustomUser
+from .models import CustomUser, TokenIntegration
 from .forms import CustomUserAdminForm
 
 
@@ -42,7 +42,7 @@ class BaseAdmin (SimpleHistoryAdmin):
         """Habilita a deleção apenas para Soft Delete."""
         return True  # ✅ Mantém a opção de exclusão ativa para Soft Delete
 
-
+@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin, BaseAdmin):  
     model = CustomUser
     list_display = ["username", "email", "first_name", "last_name", "is_active", "is_staff", "is_superuser"]
@@ -66,4 +66,11 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
 
         super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
-admin.site.register(CustomUser, CustomUserAdmin)
+#admin.site.register(CustomUser, CustomUserAdmin)
+
+@admin.register(TokenIntegration)
+class TokenIntegrationAdmin(BaseAdmin):
+    search_fields = ("user__username", "access_token")  # Permitir busca
+    list_display = ("user", "access_token", "expires_at")  # Campos visíveis no admin
+    #list_filter = ("user","expires_at")  # Filtro por validade    
+    readonly_fields = ("token", "expires_at")  # Evita edição diret

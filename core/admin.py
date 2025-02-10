@@ -50,8 +50,49 @@ class BaseAdmin (SimpleHistoryAdmin):
         """Habilita a deleção apenas para Soft Delete."""
         return True  # ✅ Mantém a opção de exclusão ativa para Soft Delete
 
+
+class BaseRenewTokenAdmin(admin.ModelAdmin):
+    """
+    Classe base para permitir a renovação de tokens no Django Admin.
+    Essa classe será herdada por CustomUserAdmin e TokenIntegrationAdmin.
+    """
+    actions = ["renew_selected_tokens"]
+
+    def renew_selected_tokens(self, request, queryset):
+        """
+        Permite renovar tokens para múltiplos usuários via Django Admin.
+        """
+        api_url = os.getenv("API_URL", "http://127.0.0.1:8000") + "/auth/admin/generate-token/"
+        success_count = 0
+
+        for obj in queryset:
+            # Verifica se é um usuário ou um token e obtém o username correto
+            user = obj.user if hasattr(obj, "user") else obj
+
+            url = f"{api_url}?username={user.username}"  # 🔥 Agora passa `username` na URL
+            response = requests.post(url)
+
+            if response.status_code == 200:
+                success_count += 1
+            else:
+                self.message_user(
+                    request,
+                    f"Erro ao renovar token para {user.username}: {response.text}",
+                    level=messages.ERROR
+                )
+
+        if success_count:
+            self.message_user(
+                request,
+                f"{success_count} tokens renovados com sucesso!",
+                level=messages.SUCCESS
+            )
+
+    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
+
+
 @admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin, BaseAdmin):  
+class CustomUserAdmin(UserAdmin, BaseAdmin, BaseRenewTokenAdmin):  
     model = CustomUser
     list_display = ["username", "email", "first_name", "last_name", "is_active", "is_staff", "is_superuser"]
     list_filter = ["is_staff", "is_superuser", "is_active"]
@@ -77,50 +118,9 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
 #admin.site.register(CustomUser, CustomUserAdmin)
 
 @admin.register(TokenIntegration)
-class TokenIntegrationAdmin(BaseAdmin):
+class TokenIntegrationAdmin(BaseAdmin, BaseRenewTokenAdmin):
     search_fields = ("user__username", "access_token")  # Permitir busca
     list_display = ("user", "updated_at", "expires_at", "access_token")  # Campos visíveis no admin
     #list_filter = ("user","expires_at")  # Filtro por validade    
     readonly_fields = ("token", "expires_at")  # Evita edição diret
     ordering = ["expires_at"]
-    
-    actions = ["renew_selected_tokens"]
-
-    def renew_selected_tokens(self, request, queryset):
-        """
-        Permite renovar tokens para múltiplos usuários via Django Admin.
-        """
-        api_url = API_URL+"/auth/admin/generate-token/"
-        success_count = 0
-
-        for token_obj in queryset:
-            url = f"{api_url}?username={token_obj.user.username}"  # 🔥 Agora passa `username` na URL
-            response = requests.post(url)
-
-            if response.status_code == 200:
-                success_count += 1
-            else:
-                self.message_user(
-                    request, 
-                    f"Erro ao renovar token para {token_obj.user.username}: {response.text}", 
-                    level=messages.ERROR
-                )
-
-        if success_count:
-            self.message_user(
-                request, 
-                f"{success_count} tokens renovados com sucesso!", 
-                level=messages.SUCCESS
-            )
-
-    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
-
-
-#    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
-#
-#    def renew_token_button(self, obj):
-#        """ Adiciona um botão para renovar o token diretamente na tabela """
-#        return format_html(f'<a href="/admin/core/tokenintegration/{obj.id}/renew/" class="button">🔄 Renovar</a>')
-#
-#    renew_token_button.allow_tags = True
-#    renew_token_button.short_description = "Renovar Token"

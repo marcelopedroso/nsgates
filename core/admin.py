@@ -1,3 +1,4 @@
+import requests
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -5,6 +6,13 @@ from simple_history.admin import SimpleHistoryAdmin
 from django.contrib import messages
 from .models import CustomUser, TokenIntegration
 from .forms import CustomUserAdminForm
+from django.urls import reverse
+from django.utils.html import format_html
+
+import os
+import environ
+env = environ.Env()
+API_URL=os.getenv("API_URL")
 
 
 class BaseAdmin (SimpleHistoryAdmin):
@@ -75,3 +83,44 @@ class TokenIntegrationAdmin(BaseAdmin):
     #list_filter = ("user","expires_at")  # Filtro por validade    
     readonly_fields = ("token", "expires_at")  # Evita edição diret
     ordering = ["expires_at"]
+    
+    actions = ["renew_selected_tokens"]
+
+    def renew_selected_tokens(self, request, queryset):
+        """
+        Permite renovar tokens para múltiplos usuários via Django Admin.
+        """
+        api_url = API_URL+"/auth/admin/generate-token/"
+        success_count = 0
+
+        for token_obj in queryset:
+            url = f"{api_url}?username={token_obj.user.username}"  # 🔥 Agora passa `username` na URL
+            response = requests.post(url)
+
+            if response.status_code == 200:
+                success_count += 1
+            else:
+                self.message_user(
+                    request, 
+                    f"Erro ao renovar token para {token_obj.user.username}: {response.text}", 
+                    level=messages.ERROR
+                )
+
+        if success_count:
+            self.message_user(
+                request, 
+                f"{success_count} tokens renovados com sucesso!", 
+                level=messages.SUCCESS
+            )
+
+    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
+
+
+#    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
+#
+#    def renew_token_button(self, obj):
+#        """ Adiciona um botão para renovar o token diretamente na tabela """
+#        return format_html(f'<a href="/admin/core/tokenintegration/{obj.id}/renew/" class="button">🔄 Renovar</a>')
+#
+#    renew_token_button.allow_tags = True
+#    renew_token_button.short_description = "Renovar Token"

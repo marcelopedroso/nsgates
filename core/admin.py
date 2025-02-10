@@ -133,3 +133,7 @@ class TokenIntegrationAdmin(BaseAdmin, BaseRenewTokenAdmin):
     def has_add_permission(self, request):
         """ 🔥 Desativa o botão de adicionar novos tokens """
         return False
+    
+    def get_readonly_fields(self, request, obj=None):
+        """ 🔥 Torna todos os campos somente leitura """
+        return [field.name for field in self.model._meta.fields]

@@ -8,6 +8,7 @@ from .models import CustomUser, TokenIntegration
 from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
+from simple_history.utils import update_change_reason
 
 import os
 import environ
@@ -86,6 +87,12 @@ class BaseRenewTokenAdmin(admin.ModelAdmin):
 
             if response.status_code == 200:
                 success_count += 1
+                
+                # 🔥 Atualiza manualmente quem fez a alteração no histórico
+                update_change_reason(obj, "Token renovado via Django Admin")
+                obj.history_user = request.user  # 🔥 Salva quem fez a alteração
+                obj.save()  # 🔥 Salva a modificação no histórico
+                
             else:
                 self.message_user(request, f"Erro ao renovar token para {user.username}: {response.text}", level=messages.ERROR)
 

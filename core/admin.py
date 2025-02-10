@@ -71,6 +71,7 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
 @admin.register(TokenIntegration)
 class TokenIntegrationAdmin(BaseAdmin):
     search_fields = ("user__username", "access_token")  # Permitir busca
-    list_display = ("user", "access_token", "expires_at")  # Campos visíveis no admin
+    list_display = ("user", "updated_at", "expires_at", "access_token")  # Campos visíveis no admin
     #list_filter = ("user","expires_at")  # Filtro por validade    
     readonly_fields = ("token", "expires_at")  # Evita edição diret
+    ordering = ["expires_at"]

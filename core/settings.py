@@ -197,6 +197,11 @@ JAZZMIN_SETTINGS = {
         "core.CustomUser",  # Usuários personalizados primeiro
         "core.TokenIntegration",  # Tokens depois
     ],
+    "icons": {
+        "auth.Group" : "fas fa-users-cog",
+        "core.CustomUser": "fas fa-user",  # Ícone de usuário 👤
+        "core.TokenIntegration": "fas fa-key",  # Ícone de chave 🔑
+    }
     
 }
 
@@ -212,5 +217,3 @@ JAZZMIN_UI_TWEAKS = {
     "navbar_fixed": True,  # Se a navbar fica fixa no topo
     "sidebar_fixed": True,  # Se a sidebar fica fixa na lateral
 }
-
-

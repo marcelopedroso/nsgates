@@ -1,3 +1,12 @@
+/*
+laranja #FF3D03
+chumbo  #424449
+preto   #000000
+cinza   #C5CAD2
+azul    #000032
+*/
+
+
 /* ==========================
    🎨 PERSONALIZAÇÃO DO DJANGO ADMIN (JAZZMIN)
    ========================== */
@@ -21,7 +30,7 @@
 
 /* 📌 Navbar (Topo) */
 .navbar {
-    background-color: #c5cad2 !important; /* Cor de fundo do topo */
+    background-color: #424449 !important; /* Cor de fundo do topo #c5cad2 */
 }
 
 .navbar .navbar-brand {
@@ -39,7 +48,7 @@
 
 /* 📌 Texto no Menu */
 .sidebar .nav-item a {
-    font-weight: bold !important; /* Deixa o texto mais forte */
+    /* font-weight: bold !important;  Deixa o texto mais forte */
     text-transform: uppercase; /* Deixa o texto em maiúsculas */
 }
 
@@ -90,8 +99,8 @@ a:hover {
 
 /* 📌 Botão Secundário (Cinza padrão) */
 .btn-secondary {
-    background-color: #423449 !important;
-    border-color: #423449 !important;
+    background-color: #424449 !important;
+    border-color: #424449 !important;
     color: white !important;
 }
 
@@ -187,3 +196,4 @@ a:hover {
     text-align: center; /* Centraliza o texto */
     font-weight: bold; /* Deixa o texto em negrito */
 }
+

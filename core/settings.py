@@ -192,6 +192,11 @@ JAZZMIN_SETTINGS = {
     #"theme": "flatly",
     #"custom_css" : "css/custom_admin.css"
     "site_footer" : "NsGate 1.0.0",
+    "order_with_respect_to": [
+        "auth",  # Usuários e Permissões
+        "core.CustomUser",  # Usuários personalizados primeiro
+        "core.TokenIntegration",  # Tokens depois
+    ],
     
 }
 
@@ -207,3 +212,5 @@ JAZZMIN_UI_TWEAKS = {
     "navbar_fixed": True,  # Se a navbar fica fixa no topo
     "sidebar_fixed": True,  # Se a sidebar fica fixa na lateral
 }
+
+

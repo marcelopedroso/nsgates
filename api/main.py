@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -8,9 +8,18 @@ from django.conf import settings
 from core.models import CustomUser, TokenIntegration
 import datetime
 from django.utils.timezone import now
+from django.core.exceptions import ObjectDoesNotExist
+from sqlalchemy.orm import Session
+from core.database import get_db
 import os
+#from datetime import datetime, timedelta
+
 
 REPORT_PATH = os.path.abspath("reports/test_report.html")
+
+router = APIRouter()
+
+#TOKEN_EXPIRATION = int(os.getenv("JWT_EXPIRATION", 3600))
 
 
 app = FastAPI(title="NSGates API", version="1.0.0")
@@ -90,6 +99,31 @@ def logout(user: dict = Depends(get_current_user)):
         return {"message": "Logout realizado com sucesso"}
     
     raise HTTPException(status_code=400, detail="Erro ao deslogar usuário")
+
+
+@app.post("/auth/admin/generate-token/")
+def admin_generate_token(username: str, db: Session = Depends(get_db)):
+    """
+    🔒 Rota segura para o Django Admin gerar um token para um usuário autenticado.
+    """
+    try:
+        user = CustomUser.objects.get(username=username)  # Usando Django ORM
+        
+        user_data = {"sub": user.username}
+
+        access_token = create_access_token(user_data)
+        refresh_token = create_refresh_token(user_data)
+        expires_at = now() + datetime.timedelta(seconds=settings.JWT_EXPIRATION)
+        
+        token_obj, created = TokenIntegration.objects.update_or_create(
+        user=user,
+        defaults={"access_token": access_token, "refresh_token": refresh_token, "expires_at": expires_at}
+    )
+        
+    except ObjectDoesNotExist:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    return {"access_token": access_token , "refresh_token": refresh_token}
 
 
 # 🔥 Nova rota para exibir o relatório de testes

@@ -105,6 +105,11 @@ class TokenIntegration(BaseModel):
     access_token = models.TextField()
     refresh_token = models.TextField()
     expires_at = models.DateTimeField()  # Data de expiração do access token
+    
+    class Meta:
+        permissions = [
+            ("renew_token", "Can Renew Token"),
+        ]
 
     def is_expired(self):
         """Verifica se o token de acesso já expirou"""

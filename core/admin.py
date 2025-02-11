@@ -8,6 +8,7 @@ from .models import CustomUser, TokenIntegration
 from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
+from simple_history.utils import update_change_reason
 
 import os
 import environ
@@ -76,7 +77,7 @@ class BaseRenewTokenAdmin(admin.ModelAdmin):
             self.message_user(request, "Você não tem permissão para renovar tokens!", level=messages.ERROR)
             return
 
-        api_url = os.getenv("API_URL", "http://127.0.0.1:8000") + "/auth/admin/generate-token/"
+        api_url = os.getenv("API_URL", "http://127.0.0.1:8000") + "/api/auth/admin/generate-token/"
         success_count = 0
 
         for obj in queryset:
@@ -86,6 +87,12 @@ class BaseRenewTokenAdmin(admin.ModelAdmin):
 
             if response.status_code == 200:
                 success_count += 1
+                
+            #    # 🔥 Atualiza manualmente quem fez a alteração no histórico
+            #    update_change_reason(obj, "Token renovado via Django Admin")
+            #    obj.history_user = request.user  # 🔥 Salva quem fez a alteração
+            #    obj.save()  # 🔥 Salva a modificação no histórico
+                
             else:
                 self.message_user(request, f"Erro ao renovar token para {user.username}: {response.text}", level=messages.ERROR)
 
@@ -137,3 +144,11 @@ class TokenIntegrationAdmin(BaseAdmin, BaseRenewTokenAdmin):
     def get_readonly_fields(self, request, obj=None):
         """ 🔥 Torna todos os campos somente leitura """
         return [field.name for field in self.model._meta.fields]
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        """ 🔥 Remove os botões 'Salvar' e 'Salvar e continuar editando' """
+        extra_context = extra_context or {}
+        extra_context["show_save"] = False
+        extra_context["show_save_and_continue"] = False
+        extra_context["show_save_and_add_another"] = False
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)

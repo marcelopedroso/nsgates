@@ -70,8 +70,18 @@ INSTALLED_APPS = [
     "django.contrib.admin",  
     "whitenoise.runserver_nostatic", 
     "simple_history",
+    "health_check",
+    "health_check.cache",
+    "health_check.storage",
+    "watchman",
     "core",  # Seu app principal
 ]
+
+WATCHMAN_AUTH_DECORATOR = "django.contrib.admin.views.decorators.staff_member_required"
+
+WATCHMAN_CHECKS = (
+    "core.watchman_checks.advanced_database_check",
+)
 
 MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
@@ -92,7 +102,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

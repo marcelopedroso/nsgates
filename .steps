@@ -1,3 +1,6 @@
+sudo -u postgres psql
+python manage.py show_urls
+
 uvicorn core.asgi:application 
 
 FastAPI  http://127.0.0.1:8000/

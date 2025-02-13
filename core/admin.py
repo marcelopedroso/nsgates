@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from django.contrib import messages
-from .models import CustomUser, TokenIntegration
+from .models import CustomUser
 from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
@@ -59,52 +59,8 @@ class BaseAdmin(SimpleHistoryAdmin):
         return actions
 
 
-class BaseRenewTokenAdmin(admin.ModelAdmin):
-    """🔥 Classe base para permitir renovação de tokens apenas para usuários autorizados"""
-    
-    actions = ["renew_selected_tokens"]
-
-#    def get_actions(self, request):
-#        """🔒 Remove a opção de renovar tokens se o usuário não tiver permissão."""
-#        actions = super().get_actions(request)
-#        if not request.user.has_perm("core.renew_token"):
-#            actions.pop("renew_selected_tokens", None)  # Remove a action se não tiver permissão
-#        return actions
-
-    def renew_selected_tokens(self, request, queryset):
-        """🔄 Renova tokens apenas para usuários com permissão"""
-        if not request.user.has_perm("core.renew_token"):
-            self.message_user(request, "Você não tem permissão para renovar tokens!", level=messages.ERROR)
-            return
-
-        api_url = os.getenv("API_URL", "http://127.0.0.1:8000") + "/api/auth/admin/generate-token/"
-        success_count = 0
-
-        for obj in queryset:
-            user = obj.user if hasattr(obj, "user") else obj
-            url = f"{api_url}?username={user.username}"
-            response = requests.post(url)
-
-            if response.status_code == 200:
-                success_count += 1
-                
-            #    # 🔥 Atualiza manualmente quem fez a alteração no histórico
-            #    update_change_reason(obj, "Token renovado via Django Admin")
-            #    obj.history_user = request.user  # 🔥 Salva quem fez a alteração
-            #    obj.save()  # 🔥 Salva a modificação no histórico
-                
-            else:
-                self.message_user(request, f"Erro ao renovar token para {user.username}: {response.text}", level=messages.ERROR)
-
-        if success_count:
-            self.message_user(request, f"{success_count} tokens renovados com sucesso!", level=messages.SUCCESS)
-
-    renew_selected_tokens.short_description = "🔄 Renovar Tokens Selecionados"
-
-
-
 @admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin, BaseAdmin, BaseRenewTokenAdmin):  
+class CustomUserAdmin(UserAdmin, BaseAdmin):  
     model = CustomUser
     list_display = ["username", "email", "first_name", "last_name", "is_active", "is_staff", "is_superuser"]
     list_filter = ["is_staff", "is_superuser", "is_active"]
@@ -128,27 +84,3 @@ class CustomUserAdmin(UserAdmin, BaseAdmin, BaseRenewTokenAdmin):
         super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
 #admin.site.register(CustomUser, CustomUserAdmin)
-
-@admin.register(TokenIntegration)
-class TokenIntegrationAdmin(BaseAdmin, BaseRenewTokenAdmin):
-    search_fields = ("user__username", "access_token")  # Permitir busca
-    list_display = ("user", "updated_at", "expires_at", "access_token")  # Campos visíveis no admin
-    #list_filter = ("user","expires_at")  # Filtro por validade    
-    readonly_fields = ("access_token", "expires_at")  # Evita edição diret
-    ordering = ["expires_at"]
-    
-    def has_add_permission(self, request):
-        """ 🔥 Desativa o botão de adicionar novos tokens """
-        return False
-    
-    def get_readonly_fields(self, request, obj=None):
-        """ 🔥 Torna todos os campos somente leitura """
-        return [field.name for field in self.model._meta.fields]
-
-    def change_view(self, request, object_id, form_url="", extra_context=None):
-        """ 🔥 Remove os botões 'Salvar' e 'Salvar e continuar editando' """
-        extra_context = extra_context or {}
-        extra_context["show_save"] = False
-        extra_context["show_save_and_continue"] = False
-        extra_context["show_save_and_add_another"] = False
-        return super().change_view(request, object_id, form_url, extra_context=extra_context)

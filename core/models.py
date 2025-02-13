@@ -95,25 +95,3 @@ class CustomUser(AbstractUser, BaseModel):
     @property
     def is_deleted(self):
         return self.deleted_at is not None
-
-    
-
-class TokenIntegration(BaseModel):
-    """Armazena os tokens JWT dos usuários autenticados"""
-    
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="token")
-    access_token = models.TextField()
-    refresh_token = models.TextField()
-    expires_at = models.DateTimeField()  # Data de expiração do access token
-    
-    class Meta:
-        permissions = [
-            ("renew_token", "Can Renew Token"),
-        ]
-
-    def is_expired(self):
-        """Verifica se o token de acesso já expirou"""
-        return self.expires_at < now()
-    
-    def __str__(self):
-        return f"Token de {self.user.username}"

@@ -62,6 +62,7 @@ AUTH_USER_MODEL = "core.CustomUser"
 INSTALLED_APPS = [
     #"unfold",
     'jazzmin',
+    'django_extensions',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -74,8 +75,28 @@ INSTALLED_APPS = [
     "health_check.cache",
     "health_check.storage",
     "watchman",
+    "oauth2_provider",
     "core",  # Seu app principal
 ]
+
+OAUTH2_PROVIDER = {
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 86400,  # Tempo de expiração do token (24h)
+    "REFRESH_TOKEN_EXPIRE_SECONDS": 86400,  # Tempo de expiração do refresh token (24h)
+    "ROTATE_REFRESH_TOKENS": True,  # Gera um novo refresh token ao renovar um token
+    "SCOPES": {
+        "read": "Ler dados",
+        "write": "Modificar dados",
+    },
+}
+
+AUTHENTICATION_BACKENDS = (
+    "oauth2_provider.backends.OAuth2Backend",
+    "django.contrib.auth.backends.ModelBackend",  # Mantém a autenticação padrão
+)
+
+
+OAUTH2_CLIENT_ID = env("OAUTH2_CLIENT_ID")
+OAUTH2_CLIENT_SECRET = env("OAUTH2_CLIENT_SECRET")
 
 WATCHMAN_AUTH_DECORATOR = "django.contrib.admin.views.decorators.staff_member_required"
 

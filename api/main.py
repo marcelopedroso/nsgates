@@ -23,3 +23,6 @@ def status():
 @app.get("/secure-endpoint/")
 async def secure_endpoint(user_data: dict = Depends(verify_token)):
     return {"message": "Acesso autorizado!", "user": user_data}
+
+
+

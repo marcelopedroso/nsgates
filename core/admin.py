@@ -9,11 +9,18 @@ from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.utils import update_change_reason
+from oauth2_provider.models import AccessToken, IDToken , Application , Grant, RefreshToken
 
 import os
 import environ
 env = environ.Env()
 API_URL=os.getenv("API_URL")
+
+admin.site.unregister(AccessToken)
+admin.site.unregister(IDToken)
+admin.site.unregister(Application)
+admin.site.unregister(Grant)
+admin.site.unregister(RefreshToken)
 
 
 class BaseAdmin(SimpleHistoryAdmin):
@@ -84,3 +91,40 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
         super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
 #admin.site.register(CustomUser, CustomUserAdmin)
+
+@admin.register(Application)
+class ApplicationAdmin(admin.ModelAdmin):
+    readonly_fields = ("client_id", "client_secret")  # Removido "delete" se não existir
+    list_display = ("name", "client_id", "client_type", "authorization_grant_type")
+    search_fields = ("name", "client_id")
+
+    # 🔥 Define a ordem dos campos no formulário
+    fields = (
+        "name",  # 🔹 Nome obrigatório
+        "user", # 🔹 Campo obrigatório
+        "client_id",  # 🔹 Somente leitura
+        "client_secret",  # 🔹 Somente leitura
+        "client_type",  # 🔹 Campo obrigatório
+        "authorization_grant_type", 
+        "redirect_uris", 
+        "post_logout_redirect_uris", 
+        "allowed_origins", 
+        "skip_authorization", 
+  
+    )
+
+@admin.register(Grant)
+class GrantAdmin(admin.ModelAdmin):
+    readonly_fields = ("code", "application", "user", "expires", "redirect_uri")
+
+@admin.register(RefreshToken)
+class RefreshTokenAdmin(admin.ModelAdmin):
+    readonly_fields = ("token", "application", "user", "access_token")
+    list_display = ("token", "application", "user", "revoked")
+    search_fields = ("token",)
+    
+    def has_add_permission(self, request):
+        return False
+    
+    
+    

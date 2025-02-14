@@ -1,6 +1,8 @@
 sudo -u postgres psql
 python manage.py show_urls
 
+#SEmpre ao gerar um novo banco, atualizar o Env com credencias do Oauth2
+
 uvicorn core.asgi:application 
 
 FastAPI  http://127.0.0.1:8000/

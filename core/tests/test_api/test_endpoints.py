@@ -3,15 +3,13 @@
 #from starlette.testclient import TestClient
 #from api.main import app
 #from django.contrib.auth import get_user_model
-#from django.conf import settings
 #
-## 🔥 Criar o cliente de teste do FastAPI
 #client = TestClient(app)
 #
 ## 🔥 Configuração do Django OAuth2
 #DJANGO_OAUTH2_TOKEN_URL = "http://127.0.0.1:8000/auth/oauth2/token/"
-#TEST_USERNAME = "kmm_tester"
-#TEST_PASSWORD = "12345"
+#TEST_USERNAME = "testuser"
+#TEST_PASSWORD = "testpassword"
 #OAUTH2_CLIENT_ID = "TigTIoAaY4wtsQIpV0edWL1t0Ds50D3CtmnM9tUm"
 #OAUTH2_CLIENT_SECRET = "k5epAm6aixzYzouFR3h3FSa50J77WfzsD7uyJ8M15BMgJGY9HdTBWvr2m26xnvhkfFxuGvdLfwxpjFHuig8ExpcdgbfvLOelz9p1H3CDBx8XWuLDUgY98aosTepB3UMM"
 #
@@ -31,7 +29,7 @@
 #@pytest.fixture
 #def get_access_token(create_test_user):
 #    """
-#    Obtém um token OAuth2 válido do Django (banco de testes).
+#    Obtém um token OAuth2 válido do Django.
 #    """
 #    response = httpx.post(
 #        DJANGO_OAUTH2_TOKEN_URL,
@@ -47,8 +45,15 @@
 #    assert response.status_code == 200, f"Erro ao obter token: {response.text}"
 #    return response.json()["access_token"]
 #
+#def test_public_endpoint():
+#    """
+#    Testa se um endpoint público pode ser acessado sem autenticação.
+#    """
+#    response = client.get("/api/status/")
+#    assert response.status_code == 200
+#    assert response.json() == {"status": "online"}
 #
-#def test_secure_endpoint_with_valid_token(get_access_token):
+#def test_protected_endpoint(get_access_token):
 #    """
 #    Testa se o endpoint protegido retorna 200 com um token válido.
 #    """
@@ -57,27 +62,6 @@
 #        "/api/secure-endpoint/",
 #        headers={"Authorization": f"Bearer {token}"}
 #    )
-#    assert response.status_code == 200, f"Erro: {response.text}"
+#    assert response.status_code == 200
 #    assert response.json()["message"] == "Acesso autorizado!"
-#
-#
-#def test_secure_endpoint_with_invalid_token():
-#    """
-#    Testa se um token inválido retorna erro 401.
-#    """
-#    response = client.get(
-#        "/api/secure-endpoint/",
-#        headers={"Authorization": "Bearer INVALIDO123"}
-#    )
-#    assert response.status_code == 401
-#    assert response.json()["detail"] == "Token inválido ou expirado"
-#
-#
-#def test_secure_endpoint_without_token():
-#    """
-#    Testa se a API retorna erro 401 quando o token não é fornecido.
-#    """
-#    response = client.get("/api/secure-endpoint/")
-#    assert response.status_code == 401
-#    assert response.json()["detail"] == "Not authenticated"
 #

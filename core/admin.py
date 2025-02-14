@@ -9,6 +9,8 @@ from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.utils import update_change_reason
+from oauth2_provider.models import AccessToken, RefreshToken, Grant, Application
+
 
 import os
 import environ
@@ -83,4 +85,3 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
 
         super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
-#admin.site.register(CustomUser, CustomUserAdmin)

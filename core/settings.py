@@ -236,9 +236,16 @@ JAZZMIN_SETTINGS = {
         "auth.Group" : "fas fa-users-cog",
         "core.CustomUser": "fas fa-user",  # Ícone de usuário 👤
         "core.TokenIntegration": "fas fa-key",  # Ícone de chave 🔑
+        "oauth2_provider.Application": "fas fa-cogs",  # Ícone de configuração para aplicativos OAuth2
+        "oauth2_provider.AccessToken": "fas fa-key",  # Ícone de chave para tokens de acesso
+        "oauth2_provider.RefreshToken": "fas fa-sync",  # Ícone de atualização para refresh tokens
+        "oauth2_provider.Grant": "fas fa-handshake",  # Ícone de autorização para grants
+        "oauth2_provider.IDToken": "fas fa-id-card",  # Ícone de identificação para ID Tokens
     }
     
 }
+
+
 
 JAZZMIN_SETTINGS["custom_css"] = "css/custom_admin.css"
 

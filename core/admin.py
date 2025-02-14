@@ -9,6 +9,8 @@ from .forms import CustomUserAdminForm
 from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.utils import update_change_reason
+from oauth2_provider.models import AccessToken, RefreshToken, Grant, Application
+
 
 import os
 import environ
@@ -83,4 +85,43 @@ class CustomUserAdmin(UserAdmin, BaseAdmin):
 
         super().save_model(request, obj, form, change)  # Cria normalmente se não existir
 
-#admin.site.register(CustomUser, CustomUserAdmin)
+
+
+from django.contrib import admin
+from oauth2_provider.models import AccessToken, RefreshToken, Application
+from oauth2_provider.admin import AccessTokenAdmin, RefreshTokenAdmin, ApplicationAdmin
+
+# 🔥 Remover os registros padrão do Django OAuth Toolkit
+admin.site.unregister(AccessToken)
+admin.site.unregister(RefreshToken)
+admin.site.unregister(Application)
+
+# 🔥 Personalizar os campos que NÃO podem ser editados
+class CustomApplicationAdmin(ApplicationAdmin):
+    readonly_fields = ("client_id", "client_secret", "created", "updated")
+    fieldsets = (
+        ("Informações do Cliente", {
+            "fields": ("client_id", "client_secret", "user", "name", "redirect_uris", "client_type", "authorization_grant_type", "created", "updated")
+        }),
+    )
+
+class CustomAccessTokenAdmin(AccessTokenAdmin):
+    readonly_fields = ("token", "user", "application", "expires", "created", "updated")
+    fieldsets = (
+        ("Informações do Token", {
+            "fields": ("token", "user", "application", "scope", "expires", "created", "updated"),
+        }),
+    )
+
+class CustomRefreshTokenAdmin(RefreshTokenAdmin):
+    readonly_fields = ("token", "user", "application", "access_token")
+    fieldsets = (
+        ("Informações do Refresh Token", {
+            "fields": ("token", "user", "application", "access_token", "created"),
+        }),
+    )
+
+# 🔥 Registrar novamente os modelos com os campos somente leitura
+admin.site.register(Application, CustomApplicationAdmin)
+admin.site.register(AccessToken, CustomAccessTokenAdmin)
+admin.site.register(RefreshToken, CustomRefreshTokenAdmin)

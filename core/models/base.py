@@ -2,6 +2,10 @@ import uuid
 from django.db import models
 from django.utils.timezone import now
 from simple_history.models import HistoricalRecords
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()  # 🔥 Isso precisa estar definido!
+
 
 class ActiveManager(models.Manager):
     """Manager que retorna apenas registros não deletados"""

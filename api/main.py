@@ -15,6 +15,8 @@ app = FastAPI(
     swagger_ui_parameters={"persistAuthorization": False},  # 🔥 Garante que o Swagger sempre peça a autenticação
 )
 
+from core.routers import user
+app.include_router(user.router)
 
 # Rota Status
 @app.get("/status")

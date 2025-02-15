@@ -7,6 +7,7 @@ django.setup()
 
 from fastapi import FastAPI, Depends
 from api.auth import verify_token
+from api.auth import verify_api_key
 
 app = FastAPI(
     title="NSGates API",
@@ -23,3 +24,8 @@ def status():
 @app.get("/secure-endpoint/")
 async def secure_endpoint(user_data: dict = Depends(verify_token)):
     return {"message": "Acesso autorizado!", "user": user_data}
+
+
+@app.get("/secure-data/")
+async def secure_data(api_key=Depends(verify_api_key)):
+    return {"message": "Acesso autorizado via API Key!", "api_key_owner": api_key.name}

@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from simple_history.utils import update_change_reason
 from oauth2_provider.models import AccessToken, IDToken , Application , Grant, RefreshToken
+from .models.apikey import APIKey
 
 import os
 import environ
@@ -125,6 +126,47 @@ class RefreshTokenAdmin(admin.ModelAdmin):
     
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(APIKey)
+class APIKeyAdmin(admin.ModelAdmin):
+    list_display = ("name", "key", "expires_at", "revoked", "created_at", "updated_at")
+    readonly_fields = ("key", "created_at", "updated_at")
+    search_fields = ("name", "key")
+    list_filter = ("revoked", "expires_at")
+
+    actions = ["revoke_selected_keys"]
+
+    def revoke_selected_keys(self, request, queryset):
+        """Revoga múltiplas chaves selecionadas no admin"""
+        queryset.update(revoked=True)
+        self.message_user(request, f"{queryset.count()} chaves de API foram revogadas com sucesso.", level="success")
+
+    revoke_selected_keys.short_description = "Revogar chaves selecionadas"    
     
-    
-    
+#@admin.register(APIKey)
+#class APIKeyAdmin(admin.ModelAdmin):
+#    list_display = ("name", "user", "is_active", "created_at")
+#    readonly_fields = ("created_at", "updated_at", "display_key")
+#    search_fields = ("name", "user__username")
+#    list_filter = ("is_active",)
+#
+#    def display_key(self, obj):
+#        """Exibe a API Key apenas no momento da criação"""
+#        return "A API Key será gerada ao salvar."
+#    
+#    display_key.short_description = "API Key"
+#
+#    def save_model(self, request, obj, form, change):
+#        """Gera a chave antes de salvar e exibe para cópia"""
+#        if not obj.key:
+#            raw_key = obj.generate_key()
+#            messages.success(
+#                request,
+#                format_html(
+#                    '<strong>Sua API Key gerada:</strong> <code>{}</code><br>'
+#                    '<span style="color:red;">⚠️ Guarde essa chave agora, pois ela não será exibida novamente!</span>',
+#                    raw_key
+#                )
+#            )
+#        super().save_model(request, obj, form, change)

@@ -131,7 +131,7 @@ class RefreshTokenAdmin(admin.ModelAdmin):
 @admin.register(APIKey)
 class APIKeyAdmin(admin.ModelAdmin):
     list_display = ("name", "key", "expires_at", "revoked", "created_at", "updated_at")
-    readonly_fields = ("key", "created_at", "updated_at")
+    readonly_fields = ("key", "created_at", "updated_at","deleted_at")
     search_fields = ("name", "key")
     list_filter = ("revoked", "expires_at")
 

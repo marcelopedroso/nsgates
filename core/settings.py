@@ -241,6 +241,7 @@ JAZZMIN_SETTINGS = {
         "auth.group": "fas fa-users",  # Ícone para grupos de permissões
         "core_customuser": "fas fa-user-shield",  # Ícone para o modelo CustomUser
         "core_tokenintegration": "fas fa-key",  # Ícone para tokens de integração
+        "core.apikey": "fas fa-key",
         "oauth2_provider.accesstoken": "fas fa-key",  # Access Tokens
         "oauth2_provider.application": "fas fa-server",  # Applications
         "oauth2_provider.grant": "fas fa-handshake",  # Grants

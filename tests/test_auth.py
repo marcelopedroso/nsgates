@@ -1,64 +1,34 @@
 #import pytest
-#import requests
+#import httpx
+#import os
+#import environ
+#from django.conf import settings
 #
-#BASE_URL = "http://127.0.0.1:8000/api"
-#USER_TEST = "marcelo"
-#PASSWORD_TEST = "123"
+## 🔥 Carregar variáveis do .env
+#env = environ.Env()
+#environ.Env.read_env()
 #
-#@pytest.fixture(scope="session")
-#def get_token():
-#    """Faz login uma única vez e retorna o token JWT para reutilização nos testes."""
-#    response = requests.post(f"{BASE_URL}/auth/login/", json={
-#        "username": USER_TEST,
-#        "password": PASSWORD_TEST
-#    })
-#    assert response.status_code == 200, "Erro no login"
-#    token = response.json()["access_token"]
+#@pytest.mark.asyncio
+#async def test_generate_oauth2_token():
+#    """Testa a geração de um token OAuth2 usando credenciais válidas"""
 #    
-#    print("\n🔑 Token gerado para testes:", token)  # Debug opcional
-#    return token  # 🔥 Retorna o token para ser usado nos outros testes
+#    url = "http://127.0.0.1:8000/auth/oauth2/token/"  # URL do token
+#    data = {
+#        "grant_type": "password",
+#        "username": "testuser",
+#        "password": "Test@123456",
+#        "client_id": os.getenv("OAUTH2_CLIENT_ID"),
+#        "client_secret": os.getenv("OAUTH2_CLIENT_SECRET")
+#    }
 #
+#    async with httpx.AsyncClient() as client:
+#        response = await client.post(url, data=data)
 #
-#def test_protected_route(get_token):
-#    """Testa acesso à rota protegida usando o token gerado."""
-#    headers = {"Authorization": f"Bearer {get_token}"}
-#    response = requests.get(f"{BASE_URL}/protected/", headers=headers)
-#
-#    assert response.status_code == 200
-#    assert response.json()["message"].startswith("Bem-vindo")
+#    assert response.status_code == 200, f"Erro ao gerar token: {response.text}"
+#    token_data = response.json()
 #    
-#
-#
-#def test_refresh_token(get_token):
-#    """Testa refresh token usando o token de sessão."""
-#    headers = {"Authorization": f"Bearer {get_token}"}
-#    response = requests.post(f"{BASE_URL}/auth/refresh/", headers=headers)
-#
-#    assert response.status_code == 200
-#    assert "access_token" in response.json()
-#
-#
-#def test_logout(get_token):
-#    """Testa logout e se o token foi revogado corretamente."""
-#    headers = {"Authorization": f"Bearer {get_token}"}
-#
-#    # 🔥 Realiza logout
-#    response = requests.post(f"{BASE_URL}/auth/logout/", headers=headers)
-#    assert response.status_code == 200
-#    assert response.json() == {"message": "Logout realizado com sucesso"}
-#
-#
-#    # 🔥 Gera um novo token para os próximos testes
-#    new_response = requests.post(f"{BASE_URL}/auth/login/", json={
-#        "username": USER_TEST,
-#        "password": PASSWORD_TEST
-#    })
-#    assert new_response.status_code == 200, "Erro ao obter novo token"
-#    new_token = new_response.json()["access_token"]
+#    assert "access_token" in token_data, "Token de acesso não foi retornado"
+#    assert "token_type" in token_data and token_data["token_type"] == "Bearer", "Tipo de token inválido"
 #    
-#
-#    # 🔥 Agora testa com o novo token (deve funcionar)
-#    new_headers = {"Authorization": f"Bearer {new_token}"}
-#    response = requests.get(f"{BASE_URL}/protected/", headers=new_headers)
-#    assert response.status_code == 200, "Novo token deveria ser válido"
-#
+#    print(f"✅ Token gerado: {token_data['access_token']}")  # 🔥 Apenas para debug
+

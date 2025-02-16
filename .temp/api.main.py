@@ -3,7 +3,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from django.contrib.auth import authenticate
-from api.security import create_access_token, create_refresh_token, get_current_user
 from django.conf import settings
 from core.models import CustomUser
 import datetime
@@ -12,7 +11,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from sqlalchemy.orm import Session
 from core.database import get_db
 import os
-#from datetime import datetime, timedelta
 
 
 REPORT_PATH = os.path.abspath("reports/test_report.html")

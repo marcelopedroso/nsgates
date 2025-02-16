@@ -35,10 +35,10 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 #SECRET_KEY = 'django-insecure-odt-s1wx(ry!v)vyzwy6i3d6d+7j-#-vf1!r!(!kuofjlq4s@w'
 SECRET_KEY = env.str("SECRET_KEY", default="unsafe-secret-key")
 
-JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")  # Pode usar a mesma do Django
-JWT_ALGORITHM = "HS256"  # Algoritmo usado para assinar os tokens
-JWT_EXPIRATION = 3600  # Tempo de expiração do token (15 minutos)
-JWT_REFRESH_EXPIRATION = 86400  # Tempo de expiração do refresh token (24h)
+#JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")  # Pode usar a mesma do Django
+#JWT_ALGORITHM = "HS256"  # Algoritmo usado para assinar os tokens
+#JWT_EXPIRATION = 3600  # Tempo de expiração do token (15 minutos)
+#JWT_REFRESH_EXPIRATION = 86400  # Tempo de expiração do refresh token (24h)
 
 
 STATICFILES_DIRS = [

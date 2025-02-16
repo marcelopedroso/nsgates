@@ -10,16 +10,24 @@ from django.contrib.auth.hashers import make_password
 
 @pytest.fixture
 def test_user(db):
-    """Cria um usuário de teste no banco de dados."""
+    """Cria um usuário de teste no banco de dados corretamente antes dos testes."""
     User = get_user_model()
-    user = User.objects.create(
+    
+    user, created = User.objects.get_or_create(
         username="testuser",
-        password=make_password("Test@123456"),
-        email="teste@email.com", 
-        is_active=True
+        defaults={
+            "password": make_password("Test@123456"),  # 🔥 Garantindo hash correto
+            "email": "testuser@email.com",
+            "is_active": True
+        }
     )
-    return user
 
+    if not created:
+        user.password = make_password("Test@123456")  # 🔥 Garante que a senha esteja correta
+        user.is_active = True
+        user.save()
+    
+    return user
 
 @pytest.fixture(scope="module")
 def test_client():

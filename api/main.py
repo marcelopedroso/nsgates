@@ -44,6 +44,24 @@ app = FastAPI(
 )
 
 
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.responses import JSONResponse
+
+# 🔥 Criar o Rate Limiter armazenando os limites em memória
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+# 🔥 Tratamento de erro quando atingir o limite
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_error(request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Muitas requisições! Tente novamente mais tarde."},
+    )
+
+
 # 🔥 Middleware para logar requisições com tempo de resposta
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -69,6 +87,19 @@ async def log_requests(request: Request, call_next):
     }))
 
     return response
+
+@app.middleware("http")
+async def rate_limit_middleware(request, call_next):
+    """Middleware global para aplicar Rate Limiting corretamente"""
+    try:
+        response = await limiter.limit("100000/minute")(call_next)(request)
+        return response
+    except RateLimitExceeded as exc:
+        logger.warning(f"🔥 Rate limit atingido: {exc.detail}")
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Muitas requisições! Tente novamente mais tarde."},
+        )
 
 
 # 🔥 Incluindo os roteadores dinâmicos
@@ -105,3 +136,5 @@ async def secure_endpoint(user_data: dict = Depends(verify_token)):
 @app.get("/secure-data/")
 async def secure_data(api_key=Depends(verify_api_key)):
     return {"message": "Acesso autorizado via API Key!", "api_key_owner": api_key.name}
+
+

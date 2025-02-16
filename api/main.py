@@ -8,6 +8,8 @@ from logging.handlers import TimedRotatingFileHandler
 import time
 from datetime import datetime
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 # 🔥 Configurar o Django antes de importar modelos
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
@@ -40,7 +42,11 @@ from core.routers import user
 app = FastAPI(
     title="NSGates API",
     version="1.0.0",
-    swagger_ui_parameters={"persistAuthorization": False},  # 🔥 Garante que o Swagger sempre peça a autenticação
+    swagger_ui_parameters={
+        "persistAuthorization": True,  # 🔥 Mantém a autenticação após recarregar
+        "docExpansion": "none",  # 🔥 Minimiza os endpoints por padrão
+        "defaultModelsExpandDepth": -1,  # 🔥 Remove a exibição de modelos automáticos
+    }, # 🔥 Garante que o Swagger sempre peça a autenticação
 )
 
 
@@ -137,4 +143,8 @@ async def secure_endpoint(user_data: dict = Depends(verify_token)):
 async def secure_data(api_key=Depends(verify_api_key)):
     return {"message": "Acesso autorizado via API Key!", "api_key_owner": api_key.name}
 
+
+# 🔥 Criar o monitoramento de métricas
+instrumentator = Instrumentator().instrument(app)
+instrumentator.expose(app, endpoint="/metrics")
 

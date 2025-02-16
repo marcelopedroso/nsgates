@@ -97,6 +97,7 @@ AUTHENTICATION_BACKENDS = (
 
 OAUTH2_CLIENT_ID = env("OAUTH2_CLIENT_ID")
 OAUTH2_CLIENT_SECRET = env("OAUTH2_CLIENT_SECRET")
+RATE_LIMIT = env("RATE_LIMIT", default="100000")
 
 WATCHMAN_AUTH_DECORATOR = "django.contrib.admin.views.decorators.staff_member_required"
 

@@ -9,10 +9,13 @@ import time
 from datetime import datetime
 
 from prometheus_fastapi_instrumentator import Instrumentator
+from django.conf import settings
 
 # 🔥 Configurar o Django antes de importar modelos
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
+
+RATE_LIMIT = settings.RATE_LIMIT
 
 # 🔥 Diretório dos logs organizados por API
 LOG_DIR = "logs/api"
@@ -94,11 +97,12 @@ async def log_requests(request: Request, call_next):
 
     return response
 
+
 @app.middleware("http")
 async def rate_limit_middleware(request, call_next):
     """Middleware global para aplicar Rate Limiting corretamente"""
     try:
-        response = await limiter.limit("100000/minute")(call_next)(request)
+        response = await limiter.limit(f"{RATE_LIMIT}/minute")(call_next)(request)
         return response
     except RateLimitExceeded as exc:
         logger.warning(f"🔥 Rate limit atingido: {exc.detail}")
@@ -143,5 +147,5 @@ async def secure_data(api_key=Depends(verify_api_key)):
 
 
 # 🔥 Criar o monitoramento de métricas
-#instrumentator = Instrumentator().instrument(app)
-#instrumentator.expose(app, endpoint="/metrics")
+instrumentator = Instrumentator().instrument(app)
+instrumentator.expose(app, endpoint="/metrics")

@@ -1,7 +1,8 @@
 import os
 import httpx
 import environ
-from fastapi import Depends, HTTPException, Security
+from fastapi import APIRouter
+from fastapi import Depends, HTTPException, Security, Form
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -113,3 +114,35 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
     return key_instance  # Retorna o objeto da API Key
 
 
+# 🔥 URLs do Django OAuth2
+DJANGO_OAUTH2_TOKEN_URL = os.getenv("DJANGO_OAUTH2_TOKEN_URL", "http://127.0.0.1:8000/auth/oauth2/token/")
+router = APIRouter()
+@router.post("/auth/token/")
+async def generate_oauth2_token(
+    grant_type: str = Form(...),
+    username: str = Form(None),
+    password: str = Form(None),
+    client_id: str = Form(...),
+    client_secret: str = Form(...)
+):
+    """
+    🔥 Rota do FastAPI para gerar token OAuth2 via Django.
+    """
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            DJANGO_OAUTH2_TOKEN_URL,
+            data={
+                "grant_type": grant_type,
+                "username": username,
+                "password": password,
+                "client_id": client_id,
+                "client_secret": client_secret,
+            },
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+    return response.json()

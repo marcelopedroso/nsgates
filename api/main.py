@@ -147,4 +147,3 @@ async def secure_data(api_key=Depends(verify_api_key)):
 # 🔥 Criar o monitoramento de métricas
 instrumentator = Instrumentator().instrument(app)
 instrumentator.expose(app, endpoint="/metrics")
-

@@ -16,7 +16,9 @@ app = FastAPI(
 )
 
 from core.routers import user
-app.include_router(user.router)
+# 🔥 Adicionando rotas protegidas
+app.include_router(user.oauth_router)   # /api/o/users/ (OAuth2)
+app.include_router(user.apikey_router)  # /api/k/users/ (API Key)
 
 # Rota Status
 @app.get("/status")

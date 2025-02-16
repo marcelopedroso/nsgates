@@ -2,13 +2,13 @@ from fastapi import APIRouter
 from core.crud.base import CRUDBase
 
 class RouterBase:
-    def __init__(self, model_crud: CRUDBase, prefix: str, tag: str):
+    def __init__(self, model_crud: CRUDBase, prefix: str):
         self.model_crud = model_crud
-        self.router = APIRouter(prefix=prefix, tags=[tag])
+        self.router = APIRouter(prefix=prefix)  # 🔥 Removemos a definição fixa de tags
 
         @self.router.get("/")
         def get_all():
-            return self.model_crud.get_all()  # 🔥 Agora não passa `db`
+            return self.model_crud.get_all()
 
         @self.router.get("/{item_id}")
         def get_one(item_id: str):

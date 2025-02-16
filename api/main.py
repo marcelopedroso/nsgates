@@ -109,8 +109,6 @@ async def rate_limit_middleware(request, call_next):
 
 
 # 🔥 Incluindo os roteadores dinâmicos
-#app.include_router(user.oauth_router, prefix="/api")   # 🔐 OAuth2
-#app.include_router(user.apikey_router, prefix="/api")  # 🔑 API Key
 def load_routers():
     routers_package = "core.routers"
     
@@ -145,5 +143,5 @@ async def secure_data(api_key=Depends(verify_api_key)):
 
 
 # 🔥 Criar o monitoramento de métricas
-instrumentator = Instrumentator().instrument(app)
-instrumentator.expose(app, endpoint="/metrics")
+#instrumentator = Instrumentator().instrument(app)
+#instrumentator.expose(app, endpoint="/metrics")

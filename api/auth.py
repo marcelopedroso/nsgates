@@ -54,7 +54,7 @@ async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(oauth
     token_data = response.json()
 
     # 🔍 Debugando a resposta do Django
-    print(f"🔍 Token Data Recebido: {token_data}")
+    # print(f"🔍 Token Data Recebido: {token_data}")
 
     if response.status_code != 200 or not token_data.get("active"):
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Token inválido ou expirado")

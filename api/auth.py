@@ -26,6 +26,19 @@ OAUTH2_CLIENT_ID = os.getenv("OAUTH2_CLIENT_ID")
 OAUTH2_CLIENT_SECRET = os.getenv("OAUTH2_CLIENT_SECRET")
 
 
+def generate_permissions(model_name: str):
+    """
+    Gera automaticamente permissões padrão para um modelo.
+    Exemplo para `CustomUser` → `view_customuser`, `change_customuser`, `delete_customuser`
+    """
+    return {
+        "view": f"view_{model_name.lower()}",
+        "change": f"change_{model_name.lower()}",
+        "delete": f"delete_{model_name.lower()}",
+    }
+
+
+
 async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
     """
     Verifica se o token OAuth2 é válido no servidor Django e busca permissões diretamente do banco.
@@ -98,3 +111,5 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
         raise HTTPException(status_code=403, detail="API Key inválida ou expirada")
 
     return key_instance  # Retorna o objeto da API Key
+
+

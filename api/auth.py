@@ -26,6 +26,7 @@ OAUTH2_CLIENT_ID = os.getenv("OAUTH2_CLIENT_ID")
 OAUTH2_CLIENT_SECRET = os.getenv("OAUTH2_CLIENT_SECRET")
 
 
+
 def generate_permissions(model_name: str):
     """
     Gera automaticamente permissões padrão para um modelo.
@@ -113,3 +114,28 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
     return key_instance  # Retorna o objeto da API Key
 
 
+import httpx
+from fastapi import APIRouter, Depends, HTTPException
+from starlette.responses import JSONResponse
+from core.settings import DJANGO_OAUTH2_TOKEN_URL
+
+router = APIRouter(prefix="/auth", tags=["Auth"])
+DJANGO_OAUTH2_TOKEN_URL
+@router.post("/token/")
+async def get_oauth_token(username: str, password: str, client_id: str, client_secret: str):
+    """Rota que encaminha a solicitação de token para o Django OAuth2"""
+    payload = {
+        "grant_type": "password",
+        "username": username,
+        "password": password,
+        "client_id": client_id,
+        "client_secret": client_secret,
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(DJANGO_OAUTH2_TOKEN_URL, data=payload)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+    return JSONResponse(content=response.json(), status_code=200)

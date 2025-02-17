@@ -149,3 +149,7 @@ async def secure_data(api_key=Depends(verify_api_key)):
 # 🔥 Criar o monitoramento de métricas
 instrumentator = Instrumentator().instrument(app)
 instrumentator.expose(app, endpoint="/metrics")
+
+
+from api.auth import router as auth_router
+app.include_router(auth_router)

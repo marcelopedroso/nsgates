@@ -35,11 +35,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 #SECRET_KEY = 'django-insecure-odt-s1wx(ry!v)vyzwy6i3d6d+7j-#-vf1!r!(!kuofjlq4s@w'
 SECRET_KEY = env.str("SECRET_KEY", default="unsafe-secret-key")
 
-#JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")  # Pode usar a mesma do Django
-#JWT_ALGORITHM = "HS256"  # Algoritmo usado para assinar os tokens
-#JWT_EXPIRATION = 3600  # Tempo de expiração do token (15 minutos)
-#JWT_REFRESH_EXPIRATION = 86400  # Tempo de expiração do refresh token (24h)
-
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # Aqui ficam os arquivos estáticos personalizados (logo, CSS, JS, etc.)
@@ -98,6 +93,8 @@ AUTHENTICATION_BACKENDS = (
 OAUTH2_CLIENT_ID = env("OAUTH2_CLIENT_ID")
 OAUTH2_CLIENT_SECRET = env("OAUTH2_CLIENT_SECRET")
 RATE_LIMIT = env("RATE_LIMIT", default="100000")
+
+DJANGO_OAUTH2_TOKEN_URL = os.getenv("DJANGO_OAUTH2_TOKEN_URL", "http://127.0.0.1:8000/auth/oauth2/token/")
 
 WATCHMAN_AUTH_DECORATOR = "django.contrib.admin.views.decorators.staff_member_required"
 

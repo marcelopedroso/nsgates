@@ -103,6 +103,7 @@ WATCHMAN_CHECKS = (
 )
 
 MIDDLEWARE = [
+    #"core.middleware.fast_api.BlockDirectAccessMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",

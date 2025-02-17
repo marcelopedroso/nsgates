@@ -2,8 +2,10 @@
 .trash
 test
 test[*].py
+logs
 reports
-reports/
+/reports
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
